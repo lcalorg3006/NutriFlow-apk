@@ -61,6 +61,17 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
               onChanged: (_) => _validatePassword(),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _validateEmail();
+                _validatePassword();
+                if (_emailError == null && _passwordError == null) {
+                  // Aquí iría la lógica de autenticación
+                }
+              },
+              child: const Text('Iniciar sesión'),
+            ),
           ],
         ),
       ),
