@@ -10,6 +10,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String? _emailError;
+
+  void _validateEmail() {
+    setState(() {
+      _emailError = _emailController.text.contains('@') ? null : 'El correo debe contener "@"';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,11 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Correo electrónico'),
+              decoration: InputDecoration(
+                labelText: 'Correo electrónico',
+                errorText: _emailError,
+              ),
+              onChanged: (_) => _validateEmail(),
             ),
             const SizedBox(height: 10),
             TextField(
