@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final TextEditingController _emailController = TextEditingController();
+  String? _errorMessage; // Mensaje de error en rojo si el email no contiene '@'
+
+  @override
   Widget build(BuildContext context) {
-    const Color primaryGreen = Color(0xFF2E7D32); // Mismo color de la AppBar del login
-    const Color buttonGreen = Color(0xFF43A047);  // Mismo color para los botones
+    const Color primaryGreen = Color(0xFF2E7D32);
+    const Color buttonGreen = Color(0xFF43A047);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,8 +38,18 @@ class ForgotPasswordPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Si hay error, lo mostramos en rojo encima del TextField
+            if (_errorMessage != null) ...[
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+              const SizedBox(height: 4),
+            ],
+
             // Campo de texto para el email
             TextField(
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Ingresa el email',
@@ -46,10 +64,21 @@ class ForgotPasswordPage extends StatelessWidget {
               height: 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonGreen, // Mismo color "verde medio"
+                  backgroundColor: buttonGreen,
                 ),
                 onPressed: () {
-                  // TODO: Lógica para recuperar contraseña
+                  final String email = _emailController.text.trim();
+                  // Verificamos si contiene '@'
+                  if (!email.contains('@')) {
+                    setState(() {
+                      _errorMessage = 'El correo debe contener "@".';
+                    });
+                  } else {
+                    setState(() {
+                      _errorMessage = null; // Limpia el error si todo está bien
+                    });
+                    // TODO: Lógica para recuperar contraseña
+                  }
                 },
                 child: const Text(
                   'Enviar',
@@ -62,7 +91,7 @@ class ForgotPasswordPage extends StatelessWidget {
             // Texto "¿Correo electrónico no reconocido?"
             TextButton(
               onPressed: () {
-                // TODO: Acciones adicionales en caso de no reconocer el email
+                // TODO: Acciones adicionales
               },
               child: const Text(
                 '¿Correo electrónico no reconocido?',
