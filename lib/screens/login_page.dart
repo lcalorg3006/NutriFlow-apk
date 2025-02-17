@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_fonts/google_fonts.dart'; // Añadido para usar Google Fonts
 import 'forgot_password_page.dart';
 import 'normal_screen.dart'; // Navegamos aquí tras un login correcto
 
@@ -104,175 +105,299 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
+        // Elevación y estilo del AppBar
+        elevation: 0,
         backgroundColor: primaryGreen,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'NutriFlow',
-          style: TextStyle(
-            fontFamily: 'Georgia',
-            fontSize: 24,
+          style: GoogleFonts.pacifico(
+            fontSize: 28,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          // Contenido principal
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                Image.asset(
-                  'assets/dieta.png',
-                  width: 250,
-                  height: 250,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Inicio de sesión de usuario',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // ------------------- EMAIL -------------------
-                // Error en rojo si lo hay
-                if (_emailError != null) ...[
-                  Text(
-                    _emailError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const SizedBox(height: 4),
-                ],
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Dirección de email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // ------------------- CONTRASEÑA -------------------
-                // Error en rojo si lo hay
-                if (_passwordError != null) ...[
-                  Text(
-                    _passwordError!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const SizedBox(height: 4),
-                ],
-                TextField(
-                  controller: _passwordController,
-                  // El texto está siempre disponible, aunque no se vea
-                  obscureText: _isPasswordHidden,
-                  decoration: InputDecoration(
-                    labelText: 'Contraseña',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordHidden
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        // Solo alterna la visibilidad, no afecta el texto
-                        setState(() {
-                          _isPasswordHidden = !_isPasswordHidden;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                // ¿Olvidaste la contraseña?
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // Navegar a "Olvidé mi contraseña"
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordPage(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      '¿Olvidaste la contraseña?',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Botón: Inicia Sesión
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _loginWithEmail,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: buttonGreen,
-                    ),
-                    child: const Text(
-                      'Inicia Sesión',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Separador
-                Row(
-                  children: const [
-                    Expanded(child: Divider(thickness: 1)),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('O'),
-                    ),
-                    Expanded(child: Divider(thickness: 1)),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // Botón: Continuar con Google
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    icon: Image.network(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: _isLoading ? null : _loginWithGoogle,
-                    label: const Text(
-                      'Continuar con Google',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+      body: Container(
+        // Fondo con gradiente
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: Stack(
+          children: [
+            // Contenido principal
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
 
-          // Indicador de carga si _isLoading == true
-          if (_isLoading)
-            Container(
-              color: Colors.black54,
-              child: const Center(
-                child: CircularProgressIndicator(),
+                  // Imagen/Logo centrado con forma circular y sombra
+                  Center(
+                    child: Container(
+                      width: 180,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Image.asset(
+                            'assets/dieta.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Título de inicio de sesión
+                  Text(
+                    'Inicio de sesión',
+                    style: GoogleFonts.roboto(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: primaryGreen,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Subtítulo o mensaje de bienvenida
+                  Text(
+                    'Bienvenido(a) a NutriFlow',
+                    style: GoogleFonts.roboto(
+                      color: Colors.grey.shade700,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // ------------------- EMAIL -------------------
+                  // Error en rojo si lo hay
+                  if (_emailError != null) ...[
+                    Text(
+                      _emailError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                  // Campo de texto para correo
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      style: const TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        hintText: 'Ej: usuario@gmail.com',
+                        labelText: 'Correo electrónico',
+                        labelStyle: TextStyle(color: Colors.grey.shade700),
+                        prefixIcon: const Icon(Icons.email, color: Colors.green),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ------------------- CONTRASEÑA -------------------
+                  // Error en rojo si lo hay
+                  if (_passwordError != null) ...[
+                    Text(
+                      _passwordError!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                  // Campo de texto para contraseña
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: _isPasswordHidden,
+                      style: const TextStyle(fontSize: 16),
+                      decoration: InputDecoration(
+                        hintText: 'Tu contraseña',
+                        labelText: 'Contraseña',
+                        labelStyle: TextStyle(color: Colors.grey.shade700),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.green),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordHidden
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey.shade700,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordHidden = !_isPasswordHidden;
+                            });
+                          },
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // ¿Olvidaste la contraseña?
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Navegar a "Olvidé mi contraseña"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '¿Olvidaste la contraseña?',
+                        style: GoogleFonts.roboto(
+                          color: primaryGreen,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Botón: Inicia Sesión
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _loginWithEmail,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: buttonGreen,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        'Iniciar Sesión',
+                        style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Separador
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'O',
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Botón: Continuar con Google
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton.icon(
+                      icon: Image.network(
+                        'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      onPressed: _isLoading ? null : _loginWithGoogle,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade400),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      label: Text(
+                        'Continuar con Google',
+                        style: GoogleFonts.roboto(
+                          color: Colors.black87,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                ],
               ),
             ),
-        ],
+
+            // Indicador de carga si _isLoading == true
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
