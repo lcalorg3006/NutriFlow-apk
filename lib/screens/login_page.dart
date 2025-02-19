@@ -396,6 +396,41 @@ class _LoginPageState extends State<LoginPage> {
                   child: CircularProgressIndicator(color: Colors.white),
                 ),
               ),
+
+            // ---------------- BOTÓN NAVEGACIÓN REGISTRO----------------
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      '¿No tienes cuenta? ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Navegar a tu pantalla de registro
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NormalScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Regístrate',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.lightBlue
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
