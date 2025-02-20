@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Añadido para usar Google Fonts
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
 
   // Mensaje de error en rojo si el email no contiene '@'
-  String? _errorMessage; // Mensaje de error en rojo si el email no contiene '@'
+  String? _errorMessage; // Mensaje de error en rojo u otros errores
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +55,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                // Encabezado vistoso en la parte superior
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.lock_reset, size: 32, color: primaryGreen),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Recuperar Contraseña',
+                      style: GoogleFonts.roboto(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '¿Perdiste tu contraseña?\nNo te preocupes, ingresa tu correo electrónico y te enviaremos un enlace para que puedas restablecerla.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    fontSize: 15,
+                    color: Colors.grey.shade800,
+                    height: 1.3,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Si hay error, lo mostramos en rojo encima del TextField
                 if (_errorMessage != null) ...[
                   Text(
@@ -105,18 +134,60 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ),
                       elevation: 5,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final String email = _emailController.text.trim();
                       // Verificamos si contiene '@'
                       if (!email.contains('@')) {
                         setState(() {
                           _errorMessage = 'El correo debe contener "@".';
                         });
-                      } else {
+                        return;
+                      }
+
+                      // Si pasa la validación del formato de email, llamamos a sendPasswordResetEmail
+                      setState(() => _errorMessage = null);
+
+                      try {
+                        // Intenta enviar el correo de restablecimiento
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: email);
+
+                        // Si se envía correctamente, mostramos un AlertDialog
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Correo enviado'),
+                            content: Text(
+                              'Se ha enviado un enlace de recuperación a $email.\n'
+                              'Revisa tu bandeja de entrada.\n'
+                              'Si no recibes nada, lo más probable es que tu cuenta no exista.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        // Errores de Firebase
+                        if (e.code == 'user-not-found') {
+                          setState(() {
+                            _errorMessage =
+                                'No existe ninguna cuenta con ese correo.';
+                          });
+                        } else {
+                          setState(() {
+                            _errorMessage =
+                                'Error de Firebase: ${e.message ?? e.code}';
+                          });
+                        }
+                      } catch (e) {
+                        // Errores genéricos
                         setState(() {
-                          _errorMessage = null; // Limpia el error si todo está bien
+                          _errorMessage = 'Ocurrió un error inesperado: $e';
                         });
-                        // TODO: Lógica para recuperar contraseña
                       }
                     },
                     child: Text(
@@ -126,21 +197,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Texto "¿Correo electrónico no reconocido?"
-                TextButton(
-                  onPressed: () {
-                    // TODO: Acciones adicionales
-                  },
-                  child: Text(
-                    '¿Correo electrónico no reconocido?',
-                    style: GoogleFonts.roboto(
-                      color: primaryGreen,
-                      fontSize: 16,
                     ),
                   ),
                 ),
